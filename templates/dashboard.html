@@ -18,7 +18,7 @@
 
   {% if user_calorie %}
   <div class="row">
-    <div class="col-4">
+    <div class="col-3">
       <div class="card" style="width: 18rem;">
         <div class="card-header">
           Your Details
@@ -42,7 +42,7 @@
 
 
 
-    <div class="col-8">
+    <div class="col-9">
 
 
       <form class="row g-3" method="POST">
@@ -68,11 +68,7 @@
 
 
       {% for daily in daily %}
-      <div style="    background-color: #efc2c2;
-      border: 2px black;
-      border-style: solid;
-      border-color: red;
-      padding: 20px;">
+      <div>
         <table class="table">
           <h3>Date : {{daily.date}}</h3>
           <thead>
