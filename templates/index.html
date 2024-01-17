@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Home</title>
+{% endblock title %}
+
+{% block body_content %}
+<div class="container" style="width: 50%;">
+    <form method="POST" action="{% url 'calculate_calorie' %}" >
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group flex-nowrap mb-3">
+                    <span class="input-group-text" id="addon-wrapping">Name</span>
+                    {{form.name}}
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group flex-nowrap mb-3">
+                    <span class="input-group-text" id="addon-wrapping">Age</span>
+                    {{form.age}}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group flex-nowrap mb-3">
+                    <span class="input-group-text" id="addon-wrapping">Gender</span>
+                    {{form.gender}}
+                </div>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group flex-nowrap mb-3">
+                    <span class="input-group-text" id="addon-wrapping">Height</span>
+                    {{form.height}}
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group flex-nowrap mb-3">
+                    <span class="input-group-text" id="addon-wrapping">Weight</span>
+                    {{form.weight}}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Calculate</button>
+            </div>
+        </div>
+    </form>
+
+
+</div>
+{% endblock body_content %}

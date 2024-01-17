@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Dashboard</title>
+{% endblock title %}
+
+{% block body_content %}
+<div class="container">
+
+  {% if messages %}
+  {% for messages in messages %}
+  <div class="alert alert-{{messages.tags}} alert-dismissible fade show" role="alert">
+    {{messages}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  {% if user_calorie %}
+  <div class="row">
+    <div class="col-4">
+      <div class="card" style="width: 18rem;">
+        <div class="card-header">
+          Your Details
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">Name: {{user_calorie.name}}</li>
+          <li class="list-group-item">Age: {{user_calorie.age}}</li>
+          <li class="list-group-item">Gender: {{user_calorie.gender}}</li>
+          <li class="list-group-item">Height: {{user_calorie.height}}</li>
+          <li class="list-group-item">Weight: {{user_calorie.weight}}</li>
+          <li class="list-group-item">
+            <a class="btn btn-primary">Your Total Calorie {{user_calorie.total_calorie}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+
+
+
+    <div class="col-8">
+
+
+      <form class="row g-3" method="POST">
+        {% csrf_token %}
+        <div class="col-auto">
+          <label for="inputPassword2" class="visually-hidden">Item</label>
+          {{item_form.item}}
+        </div>
+        <div class="col-auto">
+          <label for="inputPassword2" class="visually-hidden">Calorie</label>
+          {{item_form.calorie}}
+        </div>
+        <div class="col-auto">
+          <label for="inputPassword2" class="visually-hidden">Calorie</label>
+          <input type="date" name="date_input" class="form-control">
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-primary mb-3">Confirm identity</button>
+        </div>
+      </form>
+
+      <br><br>
+
+
+      {% for daily in daily %}
+      <div style="    background-color: #efc2c2;
+      border: 2px black;
+      border-style: solid;
+      border-color: red;
+      padding: 20px;">
+        <table class="table">
+          <h3>Date : {{daily.date}}</h3>
+          <thead>
+            <tr>
+              <th scope="col">Item</th>
+              <th scope="col">Calorie</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in daily.item_date.all %}
+            <tr>
+              <th scope="row">{{i.item}}</th>
+              <td>{{i.calorie}}</td>
+              <td>Delete</td>
+            </tr>
+            {% endfor %}
+            <p>
+              Total Calorie Need: <b>{{daily.need_calorie}}</b>, Total Calorie Received:
+              <b>{{daily.today_total_calorie}}</b>
+            </p>
+          </tbody>
+        </table>
+      </div>
+      <hr>
+      {% endfor %}
+
+    </div>
+  </div>
+  {% else %}
+  <form action="{% url 'calculate_calorie' %}" method="POST">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-6" style="margin: auto;">
+        <div class="card">
+          <div class="card-header">
+            Enter Your Details
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">Name: {{calorie_form.name}}</li>
+            <li class="list-group-item">Age: {{calorie_form.age}}</li>
+            <li class="list-group-item">Gender: {{calorie_form.gender}}</li>
+            <li class="list-group-item">Height: {{calorie_form.height}}</li>
+            <li class="list-group-item">Weight: {{calorie_form.weight}}</li>
+            <li class="list-group-item">
+              <button type="submit" class="btn btn-primary">Calculate</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </form>
+  {% endif %}
+
+
+
+
+
+</div>
+<hr>
+<br>
+
+{% endblock body_content %}
