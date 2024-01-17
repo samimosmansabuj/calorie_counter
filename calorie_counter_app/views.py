@@ -5,8 +5,10 @@ from .forms import *
 from django.contrib import messages
 from .models import Calorie_Counter_Model, Date_Model
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+@login_required
 def calculate_calorie(request):
     if request.method == 'POST':
         if not request.user.is_authenticated:
@@ -47,6 +49,7 @@ def home(request):
             
     return render(request, 'index.html', context)
 
+@login_required
 def udpate_calorie(request, id):
     user = request.user
     calorie_instance = get_object_or_404(Calorie_Counter_Model, id=id)
@@ -75,8 +78,7 @@ def udpate_calorie(request, id):
             return redirect('dashboard')
     return render(request, 'update_calorie.html', context)
     
-
-
+@login_required
 def dashboard(request):
     user = request.user
     context = {}
