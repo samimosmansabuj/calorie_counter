@@ -6,6 +6,16 @@
 
 {% block body_content %}
 <div class="container" style="width: 50%;">
+    {% if messages %}
+    {% for messages in messages %}
+    <div class="alert alert-{{messages.tags}} alert-dismissible fade show" role="alert">
+        {{messages}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+
     <h1 style="text-align: center;">Login Account</h1>
     <br>
     <form method="POST">
@@ -13,11 +23,11 @@
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Username</label>
             <input type="text" name="username" class="form-control">
-        <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Password</label>
-            <input type="password" name="password" class="form-control">
-        </div>
-        <button type="submit" class="btn btn-primary">Login</button>
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Password</label>
+                <input type="password" name="password" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
     </form>
 </div>
 {% endblock body_content %}
