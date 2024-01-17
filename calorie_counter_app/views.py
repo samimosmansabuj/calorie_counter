@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from .forms import *
@@ -16,7 +16,18 @@ def calculate_calorie(request):
         calorie_form = Calorie_Counter_Form(request.POST)
         if calorie_form.is_valid():
             calorie = calorie_form.save()
+            
+            age = calorie_form.cleaned_data.get('age')
+            height = calorie_form.cleaned_data.get('height')
+            weight = calorie_form.cleaned_data.get('weight')
+            gender = calorie_form.cleaned_data.get('gender')
+            if gender == 'Male':
+                BMR = 66.47 + (13.75 * float(height)) + (5.003 * float(weight)) - (6.755 * age)
+            elif gender == 'Female':
+                BMR = 655.1 + (9.563 * float(height)) + (1.850 * float(weight)) - (4.676 * age)
+            
             calorie.user = user
+            calorie.total_calorie = BMR
             calorie.save()
             return redirect('dashboard')
         else:
@@ -33,32 +44,40 @@ def home(request):
     context = {}
     form = Calorie_Counter_Form()
     context['form'] = form
-    
-    if request.method == 'GET':
-        form_get = Calorie_Counter_Form(request.GET)
-        if form_get.is_valid():
-            age = form_get.cleaned_data.get('age')
-            height = form_get.cleaned_data.get('height')
-            weight = form_get.cleaned_data.get('weight')
-            gender = form_get.cleaned_data.get('gender')
-            if gender == 'Male':
-                BMR = 66.47 + (13.75 * float(height)) + (5.003 * float(weight)) - (6.755 * age)
-            elif gender == 'Female':
-                BMR = 655.1 + (9.563 * float(height)) + (1.850 * float(weight)) - (4.676 * age)
-            
-            if request.user.is_authenticated:
-                user = request.user
-                if Calorie_Counter_Model.objects.filter(user=user).exists():
-                    return redirect('dashboard')
-                calorie = form_get.save()
-                calorie.user = request.user
-                calorie.total_calorie = BMR
-                calorie.save()
-            
-            context['BMR'] = BMR
             
     return render(request, 'index.html', context)
 
+def udpate_calorie(request, id):
+    user = request.user
+    # calorie_instance = Calorie_Counter_Model.objects.get(user=user)
+    calorie_instance = get_object_or_404(Calorie_Counter_Model, id=id)
+    context = {}
+    calorie_form = Calorie_Counter_Form(instance=calorie_instance)
+    context['calorie_form'] = calorie_form
+    
+    if request.method == 'POST':
+        calorie_form = Calorie_Counter_Form(request.POST, instance=calorie_instance)
+        if calorie_form.is_valid():
+            
+            
+            calorie_instance.name = calorie_form.cleaned_data.get('name')
+            calorie_instance.age = calorie_form.cleaned_data.get('age')
+            calorie_instance.height = calorie_form.cleaned_data.get('height')
+            calorie_instance.weight = calorie_form.cleaned_data.get('weight')
+            calorie_instance.gender = calorie_form.cleaned_data.get('gender')
+            calorie_instance.save()
+            
+            if calorie_instance.gender == 'Male':
+                BMR = 66.47 + (13.75 * float(calorie_instance.height)) + (5.003 * float(calorie_instance.weight)) - (6.755 * calorie_instance.age)
+            elif calorie_instance.gender == 'Female':
+                BMR = 655.1 + (9.563 * float(calorie_instance.height)) + (1.850 * float(calorie_instance.weight)) - (4.676 * calorie_instance.age)
+            
+            calorie_instance.total_calorie = BMR
+            calorie_instance.save()
+            
+            return redirect('dashboard')
+    return render(request, 'update_calorie.html', context)
+    
 
 
 def dashboard(request):

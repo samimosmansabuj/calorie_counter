@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Update</title>
+{% endblock title %}
+
+{% block body_content %}
+<div class="container">
+
+    {% if messages %}
+    {% for messages in messages %}
+    <div class="alert alert-{{messages.tags}} alert-dismissible fade show" role="alert">
+        {{messages}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <form action="{% url 'calculate_calorie' %}" method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-6" style="margin: auto;">
+                <div class="card">
+                    <div class="card-header">
+                        Enter Your Details
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Name: {{calorie_form.name}}</li>
+                        <li class="list-group-item">Age: {{calorie_form.age}}</li>
+                        <li class="list-group-item">Gender: {{calorie_form.gender}}</li>
+                        <li class="list-group-item">Height: {{calorie_form.height}}</li>
+                        <li class="list-group-item">Weight: {{calorie_form.weight}}</li>
+                        <li class="list-group-item">
+                            <button type="submit" class="btn btn-primary">Calculate</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+<hr>
+<br>
+
+{% endblock body_content %}
