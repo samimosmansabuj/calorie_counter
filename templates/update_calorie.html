@@ -16,7 +16,7 @@
     {% endfor %}
     {% endif %}
 
-    <form action="{% url 'calculate_calorie' %}" method="POST">
+    <form method="POST">
         {% csrf_token %}
         <div class="row">
             <div class="col-6" style="margin: auto;">

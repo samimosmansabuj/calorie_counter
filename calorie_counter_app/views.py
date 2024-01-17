@@ -49,7 +49,6 @@ def home(request):
 
 def udpate_calorie(request, id):
     user = request.user
-    # calorie_instance = Calorie_Counter_Model.objects.get(user=user)
     calorie_instance = get_object_or_404(Calorie_Counter_Model, id=id)
     context = {}
     calorie_form = Calorie_Counter_Form(instance=calorie_instance)
@@ -58,22 +57,20 @@ def udpate_calorie(request, id):
     if request.method == 'POST':
         calorie_form = Calorie_Counter_Form(request.POST, instance=calorie_instance)
         if calorie_form.is_valid():
+            calorie = calorie_form.save(commit=False)
             
-            
-            calorie_instance.name = calorie_form.cleaned_data.get('name')
-            calorie_instance.age = calorie_form.cleaned_data.get('age')
-            calorie_instance.height = calorie_form.cleaned_data.get('height')
-            calorie_instance.weight = calorie_form.cleaned_data.get('weight')
-            calorie_instance.gender = calorie_form.cleaned_data.get('gender')
-            calorie_instance.save()
+            age = calorie_form.cleaned_data.get('age')
+            height = calorie_form.cleaned_data.get('height')
+            weight = calorie_form.cleaned_data.get('weight')
+            gender = calorie_form.cleaned_data.get('gender')
             
             if calorie_instance.gender == 'Male':
-                BMR = 66.47 + (13.75 * float(calorie_instance.height)) + (5.003 * float(calorie_instance.weight)) - (6.755 * calorie_instance.age)
+                BMR = 66.47 + (13.75 * float(height)) + (5.003 * float(weight)) - (6.755 * age)
             elif calorie_instance.gender == 'Female':
-                BMR = 655.1 + (9.563 * float(calorie_instance.height)) + (1.850 * float(calorie_instance.weight)) - (4.676 * calorie_instance.age)
+                BMR = 655.1 + (9.563 * float(height)) + (1.850 * float(weight)) - (4.676 * age)
             
-            calorie_instance.total_calorie = BMR
-            calorie_instance.save()
+            calorie.total_calorie = BMR
+            calorie.save()
             
             return redirect('dashboard')
     return render(request, 'update_calorie.html', context)
