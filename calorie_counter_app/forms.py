@@ -16,7 +16,6 @@ class Iteam_Calorie_Form(forms.ModelForm):
 
 
 class Calorie_Counter_Form(forms.ModelForm):
-    
     class Meta:
         model = Calorie_Counter_Model
         fields = ['name', 'age', 'gender', 'height', 'weight']
