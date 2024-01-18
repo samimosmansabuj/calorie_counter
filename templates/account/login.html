@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-<title>Registration</title>
+<title>Login</title>
 {% endblock title %}
 
 {% block body_content %}
@@ -16,27 +16,22 @@
     {% endif %}
 
 
-    <h1 style="text-align: center;">Create an Account</h1>
+    <h1 style="text-align: center;">Login Account</h1>
     <br>
     <form method="POST">
         {% csrf_token %}
-        <div class="mb-3">
+        <!-- <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Username</label>
             <input type="text" name="username" class="form-control">
         </div>
         <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Email</label>
-            <input type="email" name="email" class="form-control">
-        </div>
-        <div class="mb-3">
             <label for="exampleInputPassword1" class="form-label">Password</label>
             <input type="password" name="password" class="form-control">
-        </div>
-        <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Confirm Password</label>
-            <input type="password" name="confirm_password" class="form-control">
-        </div>
-        <button type="submit" class="btn btn-primary">Registration</button>
+        </div> -->
+
+        {{login_form.as_p}}
+
+        <button type="submit" class="btn btn-primary">Login</button>
     </form>
 </div>
 {% endblock body_content %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Registration</title>
+{% endblock title %}
+
+{% block body_content %}
+<div class="container" style="width: 50%;">
+    {% if messages %}
+    {% for messages in messages %}
+    <div class="alert alert-{{messages.tags}} alert-dismissible fade show" role="alert">
+        {{messages}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+
+
+
+    <h1 style="text-align: center;">Create an Account</h1>
+    <br>
+    <form method="POST" novalidate>
+        {% csrf_token %}
+        <!-- <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Username</label>
+            <input type="text" name="username" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Email</label>
+            <input type="email" name="email" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Password</label>
+            <input type="password" name="password" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Confirm Password</label>
+            <input type="password" name="confirm_password" class="form-control">
+        </div> -->
+
+        {{user_creation_form.as_p}}
+
+
+        <button type="submit" class="btn btn-primary">Registration</button>
+    </form>
+</div>
+{% endblock body_content %}

@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+
 from django.contrib.auth import authenticate, login, logout
 from .forms import *
 from django.contrib import messages
@@ -7,7 +8,8 @@ from .models import Calorie_Counter_Model, Date_Model
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 
-# Create your views here.
+
+#------------Add Caleroie Function Start------------
 @login_required
 def calculate_calorie(request):
     if request.method == 'POST':
@@ -19,17 +21,7 @@ def calculate_calorie(request):
         if calorie_form.is_valid():
             calorie = calorie_form.save()
             
-            age = calorie_form.cleaned_data.get('age')
-            height = calorie_form.cleaned_data.get('height')
-            weight = calorie_form.cleaned_data.get('weight')
-            gender = calorie_form.cleaned_data.get('gender')
-            if gender == 'Male':
-                BMR = 66.47 + (13.75 * float(height)) + (5.003 * float(weight)) - (6.755 * age)
-            elif gender == 'Female':
-                BMR = 655.1 + (9.563 * float(height)) + (1.850 * float(weight)) - (4.676 * age)
-            
             calorie.user = user
-            calorie.total_calorie = BMR
             calorie.save()
             return redirect('dashboard')
         else:
@@ -37,8 +29,9 @@ def calculate_calorie(request):
             return redirect(request.META['HTTP_REFERER'])
     else:
         return redirect('dashboard')
+#------------Add Caleroie Function End------------
 
-
+#------------Home Start------------
 def home(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
@@ -48,10 +41,14 @@ def home(request):
     context['form'] = form
             
     return render(request, 'index.html', context)
+#------------Home End------------
 
+#------------Update Caleroie Start------------
 @login_required
 def udpate_calorie(request, id):
-    user = request.user
+    if not request.user.is_authenticated:
+        return redirect('login')
+    
     calorie_instance = get_object_or_404(Calorie_Counter_Model, id=id)
     context = {}
     calorie_form = Calorie_Counter_Form(instance=calorie_instance)
@@ -61,23 +58,19 @@ def udpate_calorie(request, id):
         calorie_form = Calorie_Counter_Form(request.POST, instance=calorie_instance)
         if calorie_form.is_valid():
             calorie = calorie_form.save(commit=False)
-            
-            age = calorie_form.cleaned_data.get('age')
-            height = calorie_form.cleaned_data.get('height')
-            weight = calorie_form.cleaned_data.get('weight')
-            gender = calorie_form.cleaned_data.get('gender')
-            
-            if calorie_instance.gender == 'Male':
-                BMR = 66.47 + (13.75 * float(height)) + (5.003 * float(weight)) - (6.755 * age)
-            elif calorie_instance.gender == 'Female':
-                BMR = 655.1 + (9.563 * float(height)) + (1.850 * float(weight)) - (4.676 * age)
-            
-            calorie.total_calorie = BMR
             calorie.save()
-            
             return redirect('dashboard')
+        else:
+            messages.error(request, calorie_form.errors)
+            return redirect(request.META['HTTP_REFERER'])
+        
     return render(request, 'update_calorie.html', context)
-    
+#------------Update Caleroie End------------
+
+
+def add_item(request):
+    return None
+
 @login_required
 def dashboard(request):
     user = request.user
@@ -109,7 +102,6 @@ def dashboard(request):
             date_model = Date_Model.objects.create(
                 user=user, date=date
             )
-            date_model.need_calorie = user_calorie.total_calorie
         
         item_form = Iteam_Calorie_Form(request.POST)
         if item_form.is_valid():
@@ -118,7 +110,7 @@ def dashboard(request):
             item.date = date_model
             item.save()
         
-        total_calorie = date_model.today_total_calorie
+        total_calorie = 0
         for i in date_model.item_date.all():
             calorie = i.calorie
             total_calorie+=calorie
@@ -130,49 +122,4 @@ def dashboard(request):
                
     return render(request, 'dashboard.html', context)
 
-def registration(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard')
-    
-    if request.method == 'POST':
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-        confirm_password = request.POST['confirm_password']
-        if User.objects.filter(username=username).exists():
-            messages.warning(request, 'Username is already taken1')
-            return redirect(request.META['HTTP_REFERE'])
-        elif password != confirm_password:
-            messages.warning(request, "Password & Confirm Password doesn't match!")
-            return redirect(request.META['HTTP_REFERE'])
-        else:
-            user = User.objects.create_user(username=username, password=password)
-            user.email = email
-            user.save()
-            return redirect('login')
-        
-    return render(request, 'registration.html')
 
-def Login(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard')
-    
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        if not User.objects.filter(username=username).exists():
-            messages.warning(request, "Username Doesn't Match")
-            return redirect(request.META['HTTP_REFERER'])
-        else:
-            user = authenticate(username=username, password=password)
-            if user:
-                login(request, user)
-                return redirect('dashboard')
-            else:
-                messages.warning(request, "Password Doesn't Match")
-                return redirect(request.META['HTTP_REFERER'])
-    return render(request, 'login.html')
-
-def Logout(request):
-    logout(request)
-    return redirect('login')
