@@ -28,30 +28,11 @@ def Login(request):
     if request.method == 'POST':
         login_form = Login_Form(data=request.POST)
         if login_form.is_valid():
-            username = login_form.cleaned_data['username']
-            password = login_form.cleaned_data['password']
-            user = authenticate(username=username, password=password)
-            login(request,user)
+            login(request,login_form.get_user())
             return redirect('dashboard')
         else:
             messages.warning(request, login_form.errors)
             return redirect(request.META['HTTP_REFERER'])
-        
-    # if request.method == 'POST':
-    #     username = request.POST['username']
-    #     password = request.POST['password']
-    #     if not Custom_User.objects.filter(username=username).exists():
-    #         messages.warning(request, "Username Doesn't Match")
-    #         return redirect(request.META['HTTP_REFERER'])
-    #     else:
-    #         user = authenticate(username=username, password=password)
-    #         if user:
-    #             login(request, user)
-    #             return redirect('dashboard')
-    #         else:
-    #             messages.warning(request, "Password Doesn't Match")
-    #             return redirect(request.META['HTTP_REFERER'])
-    
     return render(request, 'account/login.html', {'login_form': login_form})
 
 def Logout(request):
