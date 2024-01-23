@@ -123,3 +123,40 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 
+def item_update(request, pk):
+    user = request.user
+    item = Iteam_Calorie_Model.objects.get(id=pk)
+    date_model = Date_Model.objects.get(user=user, date=item.date.date)
+    
+    item_form = Iteam_Calorie_Form(instance=item)
+    if request.method == 'POST':
+        item_form = Iteam_Calorie_Form(request.POST, instance=item)
+        if item_form.is_valid():
+            item_form.save()
+            
+            total_calorie = 0
+            for i in date_model.item_date.all():
+                calorie = i.calorie
+                total_calorie+=calorie
+            date_model.today_total_calorie = total_calorie
+            date_model.save()
+            
+            return redirect('dashboard')
+        else:
+            messages.warning(request, item_form.errors)
+            return redirect(request.META['HTTP_REFERER'])
+    return render(request, 'item_update.html', {'item_form': item_form})
+
+
+def delete_item(request, pk):
+    return redirect('dashboard')
+
+
+def date_calorie_sum(date_model):
+    total_calorie = 0
+    for i in date_model.item_date.all():
+        calorie = i.calorie
+        total_calorie+=calorie
+    date_model.today_total_calorie = total_calorie
+    date_model.save()
+

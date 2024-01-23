@@ -21,10 +21,10 @@ class Calorie_Counter_Model(models.Model):
     
     def save(self, *args, **kwargs):
         if self.gender == 'Male':
-            self.total_calorie = 66.47 + (13.75 * float(self.height)) + (5.003 * float(self.weight)) - (6.755 * self.age)
+            self.total_calorie = 66.47 + (13.75 * float(self.weight)) + (5.003 * float(self.height)) - (6.755 * self.age)
             super(Calorie_Counter_Model, self).save(*args, **kwargs)
         elif self.gender == 'Female':
-            self.total_calorie = 655.1 + (9.563 * float(self.height)) + (1.850 * float(self.weight)) - (4.676 * self.age)
+            self.total_calorie = 655.1 + (9.563 * float(self.weight)) + (1.850 * float(self.height)) - (4.676 * self.age)
             super(Calorie_Counter_Model, self).save(*args, **kwargs)
         else:
             self.total_calorie = 0
@@ -35,13 +35,10 @@ class Calorie_Counter_Model(models.Model):
 
 
 class Date_Model(models.Model):
-    user = models.OneToOneField(Custom_User, on_delete=models.CASCADE, blank=True, null=True)
+    user = models.ForeignKey(Custom_User, on_delete=models.CASCADE, blank=True, null=True)
     date = models.DateField(blank=True, null=True)
     need_calorie = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True, default=0)
     today_total_calorie = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True, default=0)
-    
-    # def save(self, *args, **kwargs):
-    #     self.need_calorie = 
     
     def __str__(self) -> str:
         return f'{self.date}'

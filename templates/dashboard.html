@@ -73,16 +73,21 @@
           <h3>Date : {{daily.date}}</h3>
           <thead>
             <tr>
-              <th scope="col">Item</th>
-              <th scope="col">Calorie</th>
-              
+              <th>Item</th>
+              <th>Calorie</th>
+              <th>Action</th>
             </tr>
           </thead>
+
           <tbody>
             {% for i in daily.item_date.all %}
             <tr>
-              <th scope="row">{{i.item}}</th>
+              <th>{{i.item}}</th>
               <td>{{i.calorie}}</td>
+              <td style="width: 20%;">
+                <a href="{% url 'item_update' i.id %}" style="text-decoration: none; color: black;">Update</a> |
+                <a href="{% url 'delete_item' i.id %}" style="text-decoration: none; color: black;">Delete</a>
+              </td>
               
             </tr>
             {% endfor %}
